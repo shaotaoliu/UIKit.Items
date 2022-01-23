@@ -33,6 +33,11 @@ class ItemViewModel {
             items[index].description = item.description
         }
     }
+    
+    func moveItem(from sourceIndex: Int, to destinationIndex: Int) {
+        let item = items.remove(at: sourceIndex)
+        items.insert(item, at: destinationIndex)
+    }
 }
 
 struct Item {

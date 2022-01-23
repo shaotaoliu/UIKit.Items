@@ -2,9 +2,10 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet var table: UITableView!
+    @IBOutlet weak var table: UITableView!
+    @IBOutlet weak var buttonEdit: UIBarButtonItem!
     private let vm = ItemViewModel()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,6 +23,11 @@ class ViewController: UIViewController {
         
         //navigationController?.pushViewController(controller, animated: true)
         present(controller, animated: true)
+    }
+    
+    @IBAction func edit(_ sender: Any) {
+        table.setEditing(!table.isEditing, animated: true)
+        buttonEdit.title = table.isEditing ? "Done" : "Edit"
     }
 }
 
@@ -53,6 +59,22 @@ extension ViewController: UITableViewDataSource {
         
         cell.contentConfiguration = content
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            vm.items.remove(at: indexPath.row)
+            table.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        vm.moveItem(from: sourceIndexPath.row, to: destinationIndexPath.row)
+        table.reloadData()
     }
     
 }
